@@ -290,15 +290,22 @@ print("Features result after Extra Trees Classifier: \n"+str(model.feature_impor
 
 model = LogisticRegression()
 # create the RFE model and select 20 attributes
-rfe = RFE(model, 20)
+rfe = RFE(model, 15)
 rfe = rfe.fit(X,y)
-print("Features result after RFE: \n"+str(rfe.support_)+"\n\n")
+features = []
+for i in range(len(rfe.support_)):
+    if rfe.support_[i]:
+        features.append(data.iloc[[1],[i][0]])
+
+print("Features result after RFE: \n"+str(features)+"\n\n")
+
 print(rfe.ranking_)
 
 
 sel = SelectKBest(f_classif, k=20)
-res = sel.fit_transform(X,y)
-print("Results of select k best: \n"+str(res.unique()))
+X = sel.fit_transform(X,y)
+
+print("Results of select k best: \n"+str(X.shape))
 
 
 train, validate, test = np.split(data.sample(frac=1), [int(.6*len(data)), int(.8*len(data))])
